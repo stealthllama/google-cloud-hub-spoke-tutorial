@@ -144,3 +144,8 @@ variable "authcode" {
   description = "The Flex-VM Deployment Profile authcode"
   type = string
 }
+
+variable "folder" {
+  description = "The Strata Cloud Manager configuration folder"
+  type = string
+}

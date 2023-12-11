@@ -220,7 +220,7 @@ module "vmseries" {
     op-command-modes                      = "mgmt-interface-swap"
     plugin-op-commands                    = "advance-routing:enable"
     panorama-server                       = "cloud"
-    dgname                                = "TUI-demo"
+    dgname                                = var.folder
     vm-series-auto-registration-pin-id    = var.cert-pin-id
     vm-series-auto-registration-pin-value = var.cert-pin-value
     authcodes                             = var.authcode
