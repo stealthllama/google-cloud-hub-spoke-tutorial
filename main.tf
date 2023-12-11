@@ -135,42 +135,42 @@ data "google_compute_subnetwork" "untrust" {
 }
 
 
-# Update bootstrap.xml to reflect any changes made to variables.tf.
-data "template_file" "bootstrap" {
-  template = file("bootstrap_files/bootstrap.template")
+# # Update bootstrap.xml to reflect any changes made to variables.tf.
+# data "template_file" "bootstrap" {
+#   template = file("bootstrap_files/bootstrap.template")
 
-  vars = {
-    gateway_trust   = data.google_compute_subnetwork.trust.gateway_address
-    gateway_untrust = data.google_compute_subnetwork.untrust.gateway_address
-    spoke1_cidr     = var.cidr_spoke1
-    spoke2_cidr     = var.cidr_spoke2
-    spoke1_vm1_ip   = cidrhost(var.cidr_spoke1, 10)
-    spoke2_vm1_ip   = cidrhost(var.cidr_spoke2, 10)
-  }
-}
-
-
-# Create the bootstrap.xml file.
-resource "local_file" "bootstrap" {
-  filename = "bootstrap_files/bootstrap.xml"
-  content  = data.template_file.bootstrap.rendered
-}
+#   vars = {
+#     gateway_trust   = data.google_compute_subnetwork.trust.gateway_address
+#     gateway_untrust = data.google_compute_subnetwork.untrust.gateway_address
+#     spoke1_cidr     = var.cidr_spoke1
+#     spoke2_cidr     = var.cidr_spoke2
+#     spoke1_vm1_ip   = cidrhost(var.cidr_spoke1, 10)
+#     spoke2_vm1_ip   = cidrhost(var.cidr_spoke2, 10)
+#   }
+# }
 
 
-# Create the bootstrap storage bucket.
-module "bootstrap" {
-  source          = "PaloAltoNetworks/vmseries-modules/google//modules/bootstrap"
-  service_account = module.iam_service_account.email
-  location        = "US"
-  files = {
-    "bootstrap_files/init-cfg.txt"                               = "config/init-cfg.txt"
-    "${local_file.bootstrap.filename}"                           = "config/bootstrap.xml"
-    "bootstrap_files/content/panupv2-all-contents-8622-7593"     = "content/panupv2-all-contents-8622-7593"
-    "bootstrap_files/content/panup-all-antivirus-4222-4735"      = "content/panup-all-antivirus-4222-4735"
-    "bootstrap_files/content/panupv3-all-wildfire-703414-706774" = "content/panupv3-all-wildfire-703414-706774"
-    "bootstrap_files/authcodes"                                  = "license/authcodes"
-  }
-}
+# # Create the bootstrap.xml file.
+# resource "local_file" "bootstrap" {
+#   filename = "bootstrap_files/bootstrap.xml"
+#   content  = data.template_file.bootstrap.rendered
+# }
+
+
+# # Create the bootstrap storage bucket.
+# module "bootstrap" {
+#   source          = "PaloAltoNetworks/vmseries-modules/google//modules/bootstrap"
+#   service_account = module.iam_service_account.email
+#   location        = "US"
+#   files = {
+#     "bootstrap_files/init-cfg.txt"                               = "config/init-cfg.txt"
+#     "${local_file.bootstrap.filename}"                           = "config/bootstrap.xml"
+#     "bootstrap_files/content/panupv2-all-contents-8622-7593"     = "content/panupv2-all-contents-8622-7593"
+#     "bootstrap_files/content/panup-all-antivirus-4222-4735"      = "content/panup-all-antivirus-4222-4735"
+#     "bootstrap_files/content/panupv3-all-wildfire-703414-706774" = "content/panupv3-all-wildfire-703414-706774"
+#     "bootstrap_files/authcodes"                                  = "license/authcodes"
+#   }
+# }
 
 
 
@@ -214,10 +214,20 @@ module "vmseries" {
   ]
 
   metadata = {
-    mgmt-interface-swap                  = "enable"
-    vmseries-bootstrap-gce-storagebucket = module.bootstrap.bucket_name
-    serial-port-enable                   = true
-    ssh-keys                             = "admin:${file(var.public_key_path)}"
+    serial-port-enable                    = true
+    ssh-keys                              = "admin:${file(var.public_key_path)}"
+    type                                  = "dhcp-client"
+    op-command-modes                      = "mgmt-interface-swap"
+    plugin-op-commands                    = "advance-routing:enable"
+    panorama-server                       = "cloud"
+    dgname                                = "TUI-demo"
+    vm-series-auto-registration-pin-id    = var.cert-pin-id
+    vm-series-auto-registration-pin-value = var.cert-pin-value
+    authcodes                             = var.authcode
+    dhcp-send-hostname                    = "yes"
+    dhcp-send-client-id                   = "yes"
+    dhcp-accept-server-hostname           = "yes"
+    dhcp-accept-server-domain             = "yes" 
   }
 
   scopes = [
@@ -226,10 +236,6 @@ module "vmseries" {
     "https://www.googleapis.com/auth/devstorage.read_only",
     "https://www.googleapis.com/auth/logging.write",
     "https://www.googleapis.com/auth/monitoring.write"
-  ]
-
-  depends_on = [
-    module.bootstrap
   ]
 }
 

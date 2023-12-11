@@ -129,3 +129,18 @@ variable "spoke_vm_scopes" {
     "https://www.googleapis.com/auth/monitoring.write"
   ]
 }
+
+variable "cert-pid-id" {
+  description = "The PIN ID for the firewall certificate generation request"
+  type = string
+}
+
+variable "cert-pid-value" {
+  description = "The value the firewall certificate generation request"
+  type = string
+}
+
+variable "authcode" {
+  description = "The Flex-VM Deployment Profile authcode"
+  type = string
+}
