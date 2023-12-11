@@ -221,8 +221,8 @@ module "vmseries" {
     plugin-op-commands                    = "advance-routing:enable"
     panorama-server                       = "cloud"
     dgname                                = var.folder
-    vm-series-auto-registration-pin-id    = var.cert-pin-id
-    vm-series-auto-registration-pin-value = var.cert-pin-value
+    vm-series-auto-registration-pin-id    = "89d33124-9780-406e-8a08-f7d79d24d1f5"
+    vm-series-auto-registration-pin-value = "86733ea1b9cc4038b12067af7168943e"
     authcodes                             = var.authcode
     dhcp-send-hostname                    = "yes"
     dhcp-send-client-id                   = "yes"
