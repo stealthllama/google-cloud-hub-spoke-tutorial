@@ -132,7 +132,7 @@ resource "google_compute_instance" "spoke1_vm" {
 
   metadata = {
     serial-port-enable = true
-    ssh-keys           = "${var.spoke_vm_user}:${file(var.public_key_path)}"
+    ssh-keys           = var.ssh-keys
   }
 
   network_interface {
@@ -162,7 +162,7 @@ resource "google_compute_instance" "spoke2_vm1" {
 
   metadata = {
     serial-port-enable = true
-    ssh-keys           = "${var.spoke_vm_user}:${file(var.public_key_path)}"
+    ssh-keys           = var.ssh-keys
   }
 
   network_interface {
