@@ -14,6 +14,7 @@ variable "public_key_path" {
 
 variable "mgmt_allow_ips" {
   description = "A list of IP addresses to be added to the management network's ingress firewall rule. The IP addresses will be able to access to the VM-Series management interface."
+  default     = ["0.0.0.0/0"]
   type        = list(string)
 }
 
