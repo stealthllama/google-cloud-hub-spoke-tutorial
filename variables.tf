@@ -30,7 +30,7 @@ variable "region" {
 
 variable "vmseries_image_name" {
   description = "Name of the VM-Series image within the paloaltonetworksgcp-public project.  To list available images, run: `gcloud compute images list --project paloaltonetworksgcp-public --no-standard-images`. If you are using a custom image in a different project, please update `local.vmseries_iamge_url` in `main.tf`."
-  default     = "vmseries-flex-bundle2-1022h2"
+  default     = "vmseries-flex-byol-1110"
   type        = string
 }
 
@@ -148,4 +148,8 @@ variable "authcode" {
 variable "folder" {
   description = "The Strata Cloud Manager configuration folder"
   type = string
+}
+
+variable "ssh-keys" {
+  description = "The SSK public key"
 }

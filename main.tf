@@ -215,7 +215,7 @@ module "vmseries" {
 
   metadata = {
     serial-port-enable                    = true
-    ssh-keys                              = "admin:${file(var.public_key_path)}"
+    ssh-keys                              = var.ssh-keys
     type                                  = "dhcp-client"
     op-command-modes                      = "mgmt-interface-swap"
     plugin-op-commands                    = "advance-routing:enable"
